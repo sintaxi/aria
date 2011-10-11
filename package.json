@@ -1,0 +1,23 @@
+{
+  "name": "aria",
+  "description": "A client library for Aria API",
+  "version": "0.1.0",
+  "author": "Brock Whitten <brock@sintaxi.com>",
+  "keywords": ["aria", "api", "client", "soap"],
+  "main": "./aria.js",
+  "repository": { 
+    "type": "git",
+    "url": "https://github.com/sintaxi/node-aria.git"
+  },
+  "dependencies": {
+    "xml2js-expat": "0.2.0",
+    "request": "2.1.1"
+  },
+  "engines": { "node": "*" },
+  "licenses" : [
+    { 
+      "type" : "MIT",
+      "url" : "https://raw.github.com/sintaxi/node-aria/master/README.md"
+    }
+  ]
+}
