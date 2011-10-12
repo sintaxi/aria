@@ -14,67 +14,87 @@ module.exports = function(config) {
     parser.parseString(xml)
   }
   
-  var makeJsonPretty = function(json, cb){
-    var base = json["data"]["struct"]["var"]
-    var obj = {}
-    
-    base.forEach(function(item){
-      var k = item["@"]["name"]
-      delete item["@"]
-  
-      // number
-      if(item.hasOwnProperty("number")){
-        var v = parseInt(item["number"])
-        
-      // string
-      }else if(item.hasOwnProperty("string")){
-        var v = item["string"]
-    
-      // null
-      }else if(item.hasOwnProperty("null")){
-        var v = null
-        
-      // array
-      }else if(item.hasOwnProperty("array")){
-        var v = []
-  
-        if(Array.isArray(item["array"]["struct"])){
-          var array = item["array"]["struct"]
-        }else{
-          var array = [item["array"]["struct"]]
-        }
-        
-        // iterate over each object
-        array.forEach(function(inner_object_params){
-          var inner_obj = {}
-          
-          // iterate over each object params
-          inner_object_params["var"].forEach(function(param){
-            var key = param["@"]["name"]
-            delete param["@"]
-  
-            if(param.hasOwnProperty("number")){
-              var val = parseInt(param["number"])
-  
-            }else if(param.hasOwnProperty("string")){
-              var val = param["string"]
-  
-            }else if(param.hasOwnProperty("null")){
-              var val = null
-            }
-            inner_obj[key] = val
-          })
-          
-          v.push(inner_obj)
-        })
-      }
-  
-      obj[k] = v
-    })
-  
-    cb(obj)
+  var parse = function(item){
+    var obj = {};
+    var val;
+
+    // data
+    if(item.hasOwnProperty("data")){
+      return parseData(item["data"])
+
+    // array
+    }else if(item.hasOwnProperty("array")){
+      return parseArray(item["array"])
+
+    // struct
+    }else if(item.hasOwnProperty("struct")){
+      return parseStruct(item["struct"])
+
+    // var
+    }else if(item.hasOwnProperty("var")){
+      return parseVar(item["var"])
+
+    // number
+    }else if(item.hasOwnProperty("number")){
+      return parseNumber(item["number"])
+
+    // string
+    }else if(item.hasOwnProperty("string")){
+      return parseString(item["string"])
+
+    // null
+    }else if(item.hasOwnProperty("null")){
+      return null
+
+    }else{
+     console.log("Oops")
+    }
+
+    obj[item["@"]["name"]] = val
+    return obj
   }
   
+  var parseVar = function(varr){
+    var obj = {}
+    varr.forEach(function(item){
+      obj[item["@"]["name"]] = parse(item)
+    })
+    return obj
+  }
+
+  var parseNumber = function(number){
+    return parseInt(number)
+  }
+
+  var parseString = function(string){
+    return string
+  }
+
+  var parseArray = function(array){
+    if(array["@"] && array["@"]["length"]){
+      if(array["@"]["length"] == 1){
+        return [parseStruct(array["struct"])]
+      }else{
+        array["struct"].map(function(s){
+          return parseStruct(array["struct"])
+        })
+      }
+    }else{
+      return parseStruct(array["struct"])
+    }
+    if(array["@"] && array["@"]["length"] && array["@"]["length"] == 1){
+      return [parseStruct(array["struct"])]
+    }
+  }
+
+  var parseStruct = function(struct){  
+    return parseVar(struct["var"])
+  }
+
+  var parseData = function(data){
+    return parseStruct(data["struct"])
+  } 
+
   var post = function(method, params, cb) {
     var i, k, key, opts, pairs, v, value, _i, _len;
     pairs = [];
@@ -120,9 +140,7 @@ module.exports = function(config) {
   var req = function(method, params, cb){
     post(method, params, function(xml){
       convertToJson(xml, function(json){
-        makeJsonPretty(json, function(obj){
-          cb(obj)
-        })
+        cb(parse(obj))
       })
     })
   }
