@@ -71,24 +71,23 @@ module.exports = function(config) {
   }
 
   var parseArray = function(array){
-    if(array["@"] && array["@"]["length"]){
-      if(array["@"]["length"] == 1){
-        return [parseStruct(array["struct"])]
-      }else{
-        array["struct"].map(function(s){
-          return parseStruct(array["struct"])
-        })
-      }
+    if(array["@"] && array["@"]["length"] && array["@"]["length"] == 1){
+      return [parseStruct(array["struct"])]
     }else{
       return parseStruct(array["struct"])
     }
-    if(array["@"] && array["@"]["length"] && array["@"]["length"] == 1){
-      return [parseStruct(array["struct"])]
-    }
   }
 
-  var parseStruct = function(struct){  
-    return parseVar(struct["var"])
+  var parseStruct = function(struct){
+    if(struct.constructor == Array){
+      var a = []
+      struct.forEach(function(s){
+        a.push(parseVar(s["var"]))
+      })
+      return a
+    }else{
+      return parseVar(struct["var"])
+    }
   }
 
   var parseData = function(data){
@@ -140,7 +139,7 @@ module.exports = function(config) {
   var req = function(method, params, cb){
     post(method, params, function(xml){
       convertToJson(xml, function(json){
-        cb(parse(obj))
+        cb(parse(json))
       })
     })
   }
