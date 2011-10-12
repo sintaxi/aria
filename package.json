@@ -1,7 +1,7 @@
 {
   "name": "aria",
   "description": "A client library for Aria API",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "author": "Brock Whitten <brock@sintaxi.com>",
   "keywords": ["aria", "api", "client", "soap"],
   "main": "./aria.js",
