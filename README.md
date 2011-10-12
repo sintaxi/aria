@@ -12,7 +12,7 @@ information...
       "name": "yourapplication",
       "verson": "0.0.1",
       "dependencies": {
-        "aria": "0.2.0"
+        "aria": "0.2.1"
       }
     }
 
