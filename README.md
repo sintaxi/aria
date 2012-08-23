@@ -1,3 +1,4 @@
+[![build status](https://secure.travis-ci.org/sintaxi/node-aria.png)](http://travis-ci.org/sintaxi/node-aria)
 # Aria
 
 A crappy wrapper for a crappy API. Basically makes request to API and parses the SOAP response.
