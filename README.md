@@ -1,6 +1,6 @@
 # Aria
 
-A crappy wrapper for a crappy API. Basically makes request to API and parses the SOAP response.
+A wrapper for aria API. Basically makes request to API and parses the SOAP response.
 
 ## Installation
 
